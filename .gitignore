@@ -11,6 +11,9 @@ data/
 # Knex Settings
 knex_settings.json
 
+# General Settings
+settings.json
+
 # Example code in package build process
 *-Ex.R
 
