@@ -1,11 +1,11 @@
 
 exports.up = function(knex, Promise) {
   return createUsers()
+    .then(addUniqueUser)
     .then (createShows)
+    .then (addUniqueShow)
     .then (createRatings)
     .then (addUniqueRating)
-    .then (addUniqueUser)
-    .then (addUniqueShow)
 
 
   function createUsers(){
@@ -28,10 +28,10 @@ exports.up = function(knex, Promise) {
   function createRatings(){
     return knex.schema.createTable('ratings', function(table){
       table.increments();
-      table.integer('show_id');
-      table.integer('user_id');
-      table.foreign('show_id').references('shows.id');
-      table.foreign('user_id').references('users.id');
+      table.integer('show_nid');
+      table.integer('user_nid');
+      table.foreign('show_nid').references('shows.nid');
+      table.foreign('user_nid').references('users.nid');
       table.integer('rating');
       table.timestamp('last_rated', true)
     });
@@ -39,19 +39,19 @@ exports.up = function(knex, Promise) {
 
   function addUniqueRating(){
   return knex.schema.alterTable('ratings', function(t){
-    t.unique(['show_id', 'user_id'])
+    t.unique(['show_nid', 'user_nid']);
     });
   }
 
   function addUniqueUser(){
   return knex.schema.alterTable('users', function(t){
-    t.unique('nid')
+    t.unique('nid');
     });
   }
 
   function addUniqueShow(){
   return knex.schema.alterTable('shows', function(t){
-    t.unique('nid')
+    t.unique('nid');
     });
   }
 
