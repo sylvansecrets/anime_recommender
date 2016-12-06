@@ -17,3 +17,6 @@ function moveMatching (fromLocation, toLocation, reg){
   }
 }
 
+module.exports = {
+  moveMatching: moveMatching
+}
