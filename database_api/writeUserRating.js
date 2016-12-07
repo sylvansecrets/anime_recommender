@@ -37,7 +37,7 @@ function writeAllRatings(input_json){
     console.log(`Rating information for user ${user_name} with id ${user_nid} added`)
   })
   .catch((err) => {
-    console.log(`Rating information for user ${user_name} with id ${user_nid} failed with error ${err}`)
+    console.log(`Rating information for user ${user_name} with id ${user_nid} \t failed with error ${err}`)
   })
 }
 
@@ -51,6 +51,7 @@ function injectUser(user_name, nid, transact){
         SET last_queried = to_timestamp(${currentTime})
       `
     )
+    .transacting(transact)
 }
 
 function injectShow(show_name, nid, transact){
@@ -62,9 +63,10 @@ function injectShow(show_name, nid, transact){
         SET nid = ?
       `, [nid, show_name, nid]
     )
+    .transacting(transact)
 }
 
-function injectRating(user_nid, show_nid, rating, last_rated){
+function injectRating(user_nid, show_nid, rating, last_rated, transact){
   return knex.raw(
       `
         INSERT INTO ratings (user_nid, show_nid, rating, last_rated)
@@ -73,11 +75,16 @@ function injectRating(user_nid, show_nid, rating, last_rated){
         SET rating = ${rating}
       `
     )
+    .transacting(transact)
 }
 ;
 
 // injectUser('sample', '21').then(console.log('complete'))
 // injectShow('Bloop', '548').then(console.log('Show added'))
 // injectRating('21', '548', 2, "1174107141").then(console.log('Rating added'))
-writeAllRatings(sample_input);
+// writeAllRatings(sample_input);
 // console.log(escape("dfa's"))
+
+module.exports = {
+  writeAllRatings: writeAllRatings
+}
