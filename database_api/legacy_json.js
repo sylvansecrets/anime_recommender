@@ -27,3 +27,7 @@ function writeThenZip(filename){
     .then(() => console.log("Implement this!")))
 }
 
+module.exports = {
+  writeThenZip: writeThenZip,
+  writeLegacy: writeLegacy
+}
