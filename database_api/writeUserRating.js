@@ -34,28 +34,36 @@ function writeAllRatings(input_json){
     })
   })
   .then(() => {
-    console.log(`Rating information for user ${user_name} with id ${user_nid} added`)
+    console.log(`Rating information for user ${user_name} with id ${user_nid} added`);
   })
   .catch((err) => {
-    console.log(`Rating information for user ${user_name} with id ${user_nid} \t failed with error ${err}`)
+    console.log(`Rating information for user ${user_name} with id ${user_nid} \t failed with error`, err)
   })
 }
 
-function injectUser(user_name, nid, transact){
-  let currentTime = Math.floor(Date.now()/1000);
-  return knex.raw(
-      `
-        INSERT INTO users (nid, name, last_queried)
-        VALUES (${nid}, '${user_name}', to_timestamp(${currentTime})) ON CONFLICT (nid) DO
-        UPDATE
-        SET last_queried = to_timestamp(${currentTime})
-      `
-    )
-    .transacting(transact)
+
+function injectUser(user_name, nid, transact, time){
+  let currentTime = time || Math.floor(Date.now()/1000);
+  function subQuery(){
+    let queryString =
+        `
+          INSERT INTO users (nid, name, last_queried)
+          VALUES (?, ?, to_timestamp(?)) ON CONFLICT (name) DO
+          UPDATE
+          SET last_queried = to_timestamp(?)
+        `
+    let polate = [nid, user_name, currentTime, currentTime]
+    if (nid) {queryString += ',nid = ?'; polate.push(nid)}
+    return knex.raw(
+        queryString, polate
+      )}
+  if (transact) {return subQuery();}
+  else {return knex.transaction(trx => subQuery().transacting(trx))}
 }
 
 function injectShow(show_name, nid, transact){
-  return knex.raw(
+  function subQuery(){
+    return knex.raw(
       `
         INSERT INTO shows (nid, name)
         VALUES (?, ?) ON CONFLICT (nid) DO
@@ -63,21 +71,24 @@ function injectShow(show_name, nid, transact){
         SET nid = ?
       `, [nid, show_name, nid]
     )
-    .transacting(transact)
+  }
+  if (transact) {return subQuery();}
+  else {return knex.transaction(trx => subQuery().transacting(trx))}
 }
 
 function injectRating(user_nid, show_nid, rating, last_rated, transact){
-  return knex.raw(
-      `
-        INSERT INTO ratings (user_nid, show_nid, rating, last_rated)
-        VALUES (${user_nid}, ${show_nid}, ${rating}, to_timestamp(${last_rated})) ON CONFLICT (user_nid, show_nid) DO
-        UPDATE
-        SET rating = ${rating}
-      `
-    )
-    .transacting(transact)
-}
-;
+  function subQuery(){
+    return knex.raw(
+        `
+          INSERT INTO ratings (user_nid, show_nid, rating, last_rated)
+          VALUES (?, ?, ?, to_timestamp(?)) ON CONFLICT (user_nid, show_nid) DO
+          UPDATE
+          SET rating = ?
+        `, [user_nid, show_nid, rating, last_rated, rating]
+      )}
+  if (transact) {return subQuery();}
+  else {return knex.transaction(trx => subQuery().transacting(trx))}
+};
 
 // injectUser('sample', '21').then(console.log('complete'))
 // injectShow('Bloop', '548').then(console.log('Show added'))
@@ -86,5 +97,6 @@ function injectRating(user_nid, show_nid, rating, last_rated, transact){
 // console.log(escape("dfa's"))
 
 module.exports = {
-  writeAllRatings: writeAllRatings
+  writeAllRatings: writeAllRatings,
+  injectUser: injectUser
 }
