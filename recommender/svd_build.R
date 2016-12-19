@@ -2,6 +2,7 @@ library('ggplot2')
 library('dplyr')
 library('Matrix')
 library('irlba')
+library('MASS')
 df = read.csv("/home/richard/myanimelist/psql_rip.csv")
 data.sparse = sparseMatrix(
   i = df$user_nid,
@@ -28,8 +29,18 @@ data.show.means = colMeans(data.filled, na.rm=TRUE)
 data.user.means = rowMeans(data.filled, na.rm=TRUE)
 
 # perform svd
-svd_mod = irlba(data.filled, center = data.show.means, nv=200)
+svd_mod = irlba(data.filled, center = data.show.means, nv=200, verbose=TRUE)
+rownames(svd_mod$u) = rownames(data.filled)
+rownames(svd_mod$v) = colnames(data.filled)
 
 # save the svd model
 saveRDS(svd_mod, 'svd.rds')
 
+# save the column means for later imputing
+saveRDS(data.show.means, 'show_means.rds')
+
+# save the inverse of $d and $v
+svd_inv = list(0)
+svd_inv$inv_d = ginv(diag(svd_mod$d))
+svd_inv$inv_v = ginv(t(svd_mod$v))
+saveRDS(svd_inv, 'svd_inv.rds')
