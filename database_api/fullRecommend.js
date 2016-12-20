@@ -17,7 +17,7 @@ function recommendOrder(userName){
 }
 
 function retreiveName(show_nid){
-  return knex.select('name')
+  return knex.first('name', 'id')
     .from('shows')
     .where('nid', show_nid);
 }
@@ -49,5 +49,4 @@ function namedRecommendation(userName, top = 100){
     });
 }
 
-// recommendOrder('konglamango')
-namedRecommendation('konglamango')
+module.exports = {namedRecommendation}
