@@ -23,7 +23,7 @@ app.get('/', (req, res) => {
   res.render('home')
 })
 
-app.get('/:userName', (req, res) => {
+app.get('/u/:userName', (req, res) => {
   const fullRecommend = require('../database_api/fullRecommend.js').namedRecommendation
   fullRecommend(req.params.userName)
   .then((outputRecommendation) => {
