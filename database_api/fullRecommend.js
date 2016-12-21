@@ -17,7 +17,7 @@ function recommendOrder(userName){
 }
 
 function retreiveName(show_nid){
-  return knex.first('name', 'id')
+  return knex.first('nid', 'name', 'image_source')
     .from('shows')
     .where('nid', show_nid);
 }
