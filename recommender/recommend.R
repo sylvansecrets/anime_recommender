@@ -14,14 +14,15 @@ svd_inv = readRDS(file.path(current_dir, "svd_inv.rds"))
 svd_mod = readRDS(file.path(current_dir, "svd.rds"))
 show_means = readRDS(file.path(current_dir, "show_means.rds"))
 
-# impute scores
-user_input = show_means
+# retain only non-zero user ratings
+user_ratings = user_ratings[user_ratings != 0]
+rownames(svd_inv$inv_v) = names(show_means)
 
-# replace imputed scores with real ratings where valid
-for (i in seq_len(length(user_ratings))){
-  name_ind = match(names(user_ratings)[i], names(user_input))
-  user_input[name_ind] = user_ratings[i]
-}
+# retain only shows that are in show_means
+user_input = user_ratings[names(user_ratings) %in% names(show_means)]
+
+# retain only rows of svd_inv$inv_v that are in user_ratings
+svd_inv$inv_v = svd_inv$inv_v[rownames(svd_inv$inv_v) %in% names(user_input), ]
 
 # reconstruct user preferences in k-space
 t = as.numeric(user_input) %*% svd_inv$inv_v %*% svd_inv$inv_d
@@ -30,5 +31,3 @@ t = as.numeric(user_input) %*% svd_inv$inv_v %*% svd_inv$inv_d
 output_recommendation = t %*% diag(svd_mod$d) %*% t(svd_mod$v)
 names(output_recommendation) = names(show_means)
 write(names(sort(output_recommendation, decreasing=TRUE)), stdout())
-write(current_dir, stderr())
-
