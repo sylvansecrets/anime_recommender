@@ -15,7 +15,11 @@ function writeAllRatings(input_json){
       let rank_promises = [];
       for (let show_nid in input_json['user_ratings']){
         show_promises.push(
-          injectShow(input_json['user_ratings'][show_nid]['series_title'], show_nid, transact)
+          injectShow(
+            input_json['user_ratings'][show_nid]['series_title'],
+            show_nid,
+            input_json['user_ratings'][show_nid]['series_image'],
+            transact)
           );
         rank_promises.push(
           injectRating(user_nid, show_nid, input_json['user_ratings'][show_nid]['my_score'], input_json['user_ratings'][show_nid]['my_last_updated'], transact)
@@ -61,15 +65,15 @@ function injectUser(user_name, nid, transact, time){
   else {return knex.transaction(trx => subQuery().transacting(trx))}
 }
 
-function injectShow(show_name, nid, transact){
+function injectShow(show_name, nid, image_source, transact){
   function subQuery(){
     return knex.raw(
       `
         INSERT INTO shows (nid, name)
         VALUES (?, ?) ON CONFLICT (nid) DO
         UPDATE
-        SET nid = ?
-      `, [nid, show_name, nid]
+        SET image_source = ?
+      `, [nid, show_name, image_source]
     )
   }
   if (transact) {return subQuery();}
