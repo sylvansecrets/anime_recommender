@@ -4,28 +4,36 @@
   <title>MyAnimeList Recommender</title>
   <link rel="stylesheet" type="text/css" href="/css/style.css">
   <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.0.6/handlebars.min.js"></script>
-  <script   src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js"   integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8="   crossorigin="anonymous"></script>
+  <script type="text/javascript" src="/scripts/customEvents.js"></script>
+  <script type="text/javascript" src="/scripts/malAPI.js"></script>
   <script type="text/javascript" src="/scripts/fetchRecommendations.js"></script>
+
 </head>
 <body>
-
-  <form action="/" method="POST">
-    My Anime List User Name
-    <input type="text" name="user_name">
-    <input type="submit" value="Submit">
-  </form>
+  <header>
+  </header>
+  <div class="form-container">
+    <form action="/" method="POST">
+      Enter your Username
+      <input type="text" name="user_name">
+      <input type="submit" value="Submit">
+    </form>
+  </div>
 
   <div id="recommendation-container">
   </div>
 
    <script id="anime-template" type="text/x-handlebars-template">
     <div class="anime-single">
-      <div class="anime-image">
-        <img src={{animeIMG}} oneerror='default.jpg'/>
-      </div>
-      <div class="anime-name">
-        <p>{{animeName}}</p>
-      </div>
+      <a href={{animeLink}}>
+        <div class="anime-image">
+          <img src='default.jpg' title={{animeName}}/>
+        </div>
+        <div class="anime-name">
+          <p>{{animeName}}</p>
+        </div>
+      </a>
     </div>
   </script>
 
