@@ -1,0 +1,86 @@
+$light-background: hsla(189, 100%, 95%, 1);
+$dark-background: hsla(189, 100%, 50%, 1);
+$transparent-white: hsla(200, 100%, 100%, 0.6);
+$img-width: 50px;
+$img-height: $img-width / 0.68;
+$img-pad: 15px;
+$single-height: $img-height + (2 * $img-pad);
+
+html, body{
+  height: 100%;
+  margin: 0;
+  width: 100%;
+  background-color: $light-background;
+  display: flex;
+}
+
+header{
+  background-color: $dark-background;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50px
+}
+
+.form-container{
+  position: fixed;
+  display: flex;
+  top: 60px;
+  height: 50px;
+  margin: 0
+}
+
+form{
+  margin: auto;
+
+}
+
+#recommendation-container{
+
+  position: fixed;
+  top: 120px;
+  left: 10%;
+  right: 10%;
+  bottom: 0;
+  overflow-y: scroll;
+  background-color: $transparent-white;
+
+  .anime-single{
+    position: relative;
+    height: $single-height;
+    opacity: 0.1;
+    margin: 5;
+
+
+    img{
+      position: absolute;
+      left: 10;
+      top: $img-pad;
+      bottom: $img-pad;
+      visibility: hidden;
+      width: $img-width;
+      height: $img-height;
+    }
+
+    p{
+      margin: 0;
+      display: inline-block;
+      font-size: 1em;
+      line-height: $single-height;
+      position: absolute;
+      left: $img-width + 15px;
+    }
+  }
+
+  .animate{
+    transform-style: preserve-3d;
+    transform-origin: 0 0;
+    animation: flip 1.5s ease-in-out forwards;
+  }
+}
+
+@-webkit-keyframes flip {
+  0% { transform: rotateX(-89deg) translateY(400px); opacity: 0.5;}
+  100% { transform: rotateX(0deg) translateY(0); opacity: 1;}
+}
