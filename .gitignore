@@ -2,6 +2,9 @@
 *.csv
 *.rds
 
+# Generated CSS
+/server/public/css
+
 # History files
 .Rhistory
 .Rapp.history
