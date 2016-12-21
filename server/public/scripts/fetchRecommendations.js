@@ -6,10 +6,8 @@ $(document).ready(function(){
     event.preventDefault();
     $('#recommendation-container').empty();
     const userName = $(this).children('input').val();
-    console.log("once")
     fetchRecommendation(userName)
     .then((orderedRecommendation) => {
-      console.log('twice')
       const source   = $("#anime-template").html();
       const template = Handlebars.compile(source);
       renderAnime(orderedRecommendation, template)
@@ -19,17 +17,20 @@ $(document).ready(function(){
 
 
 function renderAnime(orderedRecommendation, template){
-  console.log('thrice')
+  const defaultIMG = 'http://imgur.com/a/yaSCZ'
   $container = $('#recommendation-container')
   for (recommendation of orderedRecommendation){
-    $container
-      .append($(template({animeName: recommendation.name, animeIMG: '', animeID: recommendation.id})).addClass('animate').data("data-mal-id", recommendation.id))
+    const html = template({
+        animeName: recommendation.name,
+        animeIMG: recommendation.image_source || defaultIMG,
+        animeID: recommendation.nid, });
+    $(html).addClass('animate').appendTo($container);
   }
 }
 
 function fetchRecommendation(userName){
   return  $.getJSON({
-    url: `/${userName}`,
+    url: `/u/${userName}`,
     method: 'GET',
     });
 }
