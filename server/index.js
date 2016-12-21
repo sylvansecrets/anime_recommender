@@ -8,8 +8,8 @@ var sassMiddleWare = require('node-sass-middleware');
 const path = require('path');
 
 app.use(sassMiddleWare({
-  src: path.join(__dirname, '..', 'sass'),
-  dest: path.join(__dirname, '..', 'public'),
+  src: path.join(__dirname, 'sass'),
+  dest: path.join(__dirname, 'public'),
   debug: true,
   outputStyle: 'compressed',
   prefix: 'http://localhost:8080/styles'
