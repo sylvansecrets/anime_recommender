@@ -3,7 +3,7 @@ library('dplyr')
 library('Matrix')
 library('irlba')
 library('MASS')
-df = read.csv("/home/richard/myanimelist/psql_rip.csv")
+df = read.csv("/tmp/psql_rip.csv")
 data.sparse = sparseMatrix(
   i = df$user_nid,
   j = df$show_nid,
