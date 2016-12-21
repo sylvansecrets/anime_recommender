@@ -6,7 +6,7 @@ function retreiveMalJSON(username, tries = 3){
   return request(apiString)
     .then((outputHTML) => {
       const $ = cheerio.load(outputHTML,{xmlMode: true});
-      const extractions = ["my_score","series_title", "series_animedb_id","my_last_updated"]
+      const extractions = ["my_score","series_title", "series_animedb_id","my_last_updated", "series_image"]
       const outputJSON = {'user_ratings':{}};
       outputJSON['user_id'] = $('user_id').html();
       outputJSON['user_name'] = $('user_name').html();
